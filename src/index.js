@@ -1,25 +1,21 @@
-const express = require('express')
-const app = express()
-const authRoute = require('./routes/auth')
-require('dotenv').config()
-const morgan = require('morgan')
-const chalk = require('chalk')
+import express from 'express'
+import authRoute from './routes/auth.js'
+import * as dotenv from 'dotenv'
+import morgan from 'morgan'
+import chalk from 'chalk'
 import dbConnection from './utilities/db.js'
 
-const PORT = process.env.PORT || 4000
+const PORT = process.env.PORT || 3000
+
+const app = express()
+app.use(express.json())
 app.use(morgan('dev'))
-app.use('/admin', authRoute)
+dotenv.config({ path: 'src/utilities/config.env' })
+app.use('/onadmin', authRoute)
 
 //db connecting
-dbConnection(() => {
-	console.log(chalk.orange(`connecting to database...`))
-})
-
-// route
-app.use('/', (req, res) => {
-	res.send('send msg')
-})
+dbConnection()
 
 app.listen(PORT, () => {
-	console.log(`app running on port 4000`)
+  console.log(chalk.blue.bold(`app running on port ${PORT}`))
 })
